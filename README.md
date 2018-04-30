@@ -1,6 +1,12 @@
-# Project Title
+# Lazy load
 
-One Paragraph of project description goes here
+Implementación de la solución al problema lazy load de la Facebook Hacker Cup 2017, usando las siguientes tecnologias:
+
+* [Angular](https://angular.io/)
+* [Bootstrap](https://getbootstrap.com/)
+* [Spring-boot](https://projects.spring.io/spring-boot/)
+* [MongoDB](https://www.mongodb.com/)
+
 
 ## Getting Started
 
