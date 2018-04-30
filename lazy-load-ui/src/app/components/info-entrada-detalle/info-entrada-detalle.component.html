@@ -1,0 +1,33 @@
+
+<div *ngIf="informacionRespuesta" class="container">
+  <form name="formInformacionEntradaDetalle">
+    <div class="from-group">
+        <h4>Información de respuesta</h4>
+        <hr>
+    </div>
+    <div>
+      <table class="table table-striped">
+        <caption>Lista de archivos procesados para el trabajador: {{informacionRespuesta.listaProcesos[0].idTrabajador}}</caption>
+        <thead class="thead-light">
+          <tr>
+            <th scope="col">Fecha ejecucion</th>
+            <th scope="col">Archivo cargado</th>
+            <th scope="col">Acciones</th>
+          </tr>
+        </thead>
+        <tbody *ngIf="informacionRespuesta.listaProcesos.length==0">
+          <tr>
+            <td colspan="3" class="fileTablaVacia">No hay archivos procesados</td>
+          </tr>
+        </tbody>
+        <tbody *ngIf="informacionRespuesta.listaProcesos.length>0">
+            <tr *ngFor="let proceso of informacionRespuesta.listaProcesos">
+              <td>{{proceso.fechaEjecucion}}</td>
+              <td>{{proceso.nombreArchivoCargado}}</td>
+              <td><img src="assets\icons\fileTxt.png" title="Descargar archivo" (click)="descargarArchivo(proceso.idProceso)"/></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+  </form>  
+</div>

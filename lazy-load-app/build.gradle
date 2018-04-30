@@ -1,0 +1,35 @@
+apply plugin: 'org.springframework.boot'
+ext.mainClass = 'com.techandsolve.lazyload.LazyLoadApplication'
+
+dependencies {
+    compile('org.springframework.boot:spring-boot-starter-actuator')
+    compile('org.springframework.boot:spring-boot-starter-web')
+    compile('org.springframework.boot:spring-boot-starter-data-mongodb')
+    compileOnly('org.projectlombok:lombok')
+}
+
+task pathingJar(type: Jar) {
+    dependsOn configurations.runtime
+    appendix = 'pathing'
+
+    doFirst {
+        manifest {
+            attributes "Class-Path": configurations.runtime.files.collect {
+                it.toURI().toURL().toString().replaceFirst("file:/", '/')
+            }.join(' ')
+            attributes 'Main-Class': 'com.techandsolve.lazyload.LazyLoadApplication'
+        }
+    }
+}
+
+jar{
+    archiveName = "${baseName}.${extension}"
+}
+
+
+bootRun {
+    dependsOn pathingJar
+    doFirst {
+        classpath = files("$buildDir/classes/java/main", "$buildDir/resources/main", pathingJar.archivePath)
+    }
+}

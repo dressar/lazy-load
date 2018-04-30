@@ -1,0 +1,3 @@
+rootProject.name = 'lazy-load'
+
+include 'lazy-load-app'

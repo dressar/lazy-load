@@ -1,0 +1,53 @@
+<ngx-busy [busy]="thingsSubscription"></ngx-busy>
+<div class="container">
+  <ngx-alerts></ngx-alerts>
+  <form name="formInformacionEntrada">
+      <div class="from-group">
+          <h4>Información de entrada</h4>
+          <hr>
+      </div>
+      <div class="row align-items-start top-buffer">
+        <div class="col-sm-3">
+            <label for="idTrabajador">* Identificación trabajador:</label>
+        </div>
+        <div class="col-sm-6">
+            <input id="idTrabajador" class="form-control" name="idTrabajador" required maxlength="15" 
+              [(ngModel)]='infoEntrada.idTrabajador' placeholder="número identificación" #idTrabajador="ngModel">
+            <div *ngIf="idTrabajador.invalid && (idTrabajador.dirty || idTrabajador.touched)">
+              <div *ngIf="idTrabajador.errors.required">
+                <span class="error" >campo requerido</span>
+              </div>
+              <div *ngIf="idTrabajador.errors.maxlength">
+                debe tener maximo 15 caracteres
+              </div>
+            </div> 
+        </div>
+      </div>
+      <div class="row align-items-start top-buffer">
+        <div class="col-sm-3">
+          <label for="inputArchivo">* Archivo a procesar:</label>
+        </div>
+        <div class="col-sm-6">
+          <div class="input-group mb-3">
+            <div class="custom-file">
+              <input #inputArchivo type="file" class="custom-file-input" id="inputArchivo" (change)="selectFile($event)" required >
+              <label class="custom-file-label" for="inputArchivo">{{(selectedFiles && selectedFiles.length>0)? selectedFiles[0].name:'Seleccionar archivo'}}</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row align-items-start top-buffer">
+        <div class="col-sm-9 text-right">
+          <button type="button" class="btn btn-sm btn-primary" 
+            [disabled]="!selectedFiles || idTrabajador.invalid" 
+            (click)="upload()">Procesar</button> 
+          <button type="button" class="btn btn-sm btn-primary" 
+            disabled 
+            (click)="upload(); formInformacionEntrada.reset()">Descargar</button> 
+        </div>
+      </div>
+  </form>
+</div>
+<app-info-entrada-detalle 
+  [informacionRespuesta] = "informacionRespuesta">
+</app-info-entrada-detalle>
