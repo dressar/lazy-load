@@ -30,7 +30,7 @@ import { InfoEntradaDetalleComponent } from './components/info-entrada-detalle/i
     InputFileModule,
     BrowserAnimationsModule,
     AlertModule.forRoot({maxMessages: 5, timeout: 10000}),
-    BusyModule
+    BusyModule,
   ],
   providers: [UploadFileService],
   bootstrap: [AppComponent]

@@ -1,8 +1,11 @@
 package com.techandsolve.lazyload.controllers;
 
 import com.techandsolve.lazyload.business.ProcesadorLazyLoad;
+import com.techandsolve.lazyload.constants.MensajesError;
+import com.techandsolve.lazyload.constants.MensajesExito;
 import com.techandsolve.lazyload.dto.InformacionRespuesta;
 import com.techandsolve.lazyload.exceptions.BusinessException;
+import com.techandsolve.lazyload.exceptions.TechnicalException;
 import com.techandsolve.lazyload.files.ProcesadorArchivos;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -32,13 +35,20 @@ public class LazyLoadContoller {
         InformacionRespuesta informacionRespuesta;
         try {
             informacionRespuesta = procesadorLazyLoad.procesarLazyLoad(idTrabajador,file);
-            informacionRespuesta.setMensaje("Arhivo cargado correctamente " + file.getOriginalFilename() + "!");
+            informacionRespuesta.setMensaje(String.format(MensajesExito.ARCHIVO_PROCESADO_CORRECTAMENTE,
+                    file.getOriginalFilename()));
 
             return ResponseEntity.status(HttpStatus.OK).body(informacionRespuesta);
-        } catch (BusinessException e) {
+        } catch (TechnicalException e){
+            LOGGER.log(Level.SEVERE,e.getMessage(),e);
             informacionRespuesta = new InformacionRespuesta();
-            informacionRespuesta.setMensaje("Error procesando el archivo: " + file.getOriginalFilename() + "!");
+            informacionRespuesta.setMensaje(MensajesError.ERROR_GENERICO);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(informacionRespuesta);
+        } catch (BusinessException e) {
+            LOGGER.log(Level.SEVERE,e.getMessage(),e);
+            informacionRespuesta = new InformacionRespuesta();
+            informacionRespuesta.setMensaje(e.getMessage());
+            return ResponseEntity.status(HttpStatus.OK).body(informacionRespuesta);
         }
     }
 
@@ -48,6 +58,9 @@ public class LazyLoadContoller {
         try{
             List<String> archivoRespuesta = procesadorLazyLoad.obtenerInformacionRespuesta(idProceso);
             return ResponseEntity.status(HttpStatus.OK).body(archivoRespuesta);
+        }catch (TechnicalException e){
+            LOGGER.log(Level.SEVERE,e.getMessage(),e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("");
         }catch (BusinessException e){
             LOGGER.log(Level.SEVERE,e.getMessage(),e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("");

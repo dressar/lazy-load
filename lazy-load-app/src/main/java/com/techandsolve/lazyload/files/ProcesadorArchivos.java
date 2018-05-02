@@ -1,6 +1,7 @@
 package com.techandsolve.lazyload.files;
 
-import com.techandsolve.lazyload.exceptions.BusinessException;
+import com.techandsolve.lazyload.constants.MensajesError;
+import com.techandsolve.lazyload.exceptions.TechnicalException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -13,15 +14,14 @@ import java.util.stream.Collectors;
 @Component
 public class ProcesadorArchivos {
 
-    public List<String> obtenerContenidoArchivo(MultipartFile archivo) throws BusinessException{
-        if(archivo!=null){
+    public List<String> obtenerContenidoArchivo(MultipartFile archivo) throws TechnicalException{
             try {
                 return new BufferedReader(new InputStreamReader(archivo.getInputStream()))
                         .lines().collect(Collectors.toList());
             } catch (IOException e) {
-                throw new BusinessException("Error obteniendo el contenido del archivo cargado: "+archivo.getOriginalFilename(),e);
+                throw new TechnicalException(String.format(MensajesError.ERROR_CONTENIDO_ARCHIVO,archivo.getOriginalFilename()),e);
+            } catch (NullPointerException e) {
+                throw new TechnicalException(MensajesError.ERROR_ARCHIVO_NULO,e);
             }
-        }
-        throw new BusinessException("Error obteniendo el contenido del archivo cargado: el archivo es nulo");
     }
 }

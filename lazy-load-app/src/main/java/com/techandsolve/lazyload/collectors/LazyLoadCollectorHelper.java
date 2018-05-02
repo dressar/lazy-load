@@ -1,4 +1,4 @@
-package com.techandsolve.lazyload.business.collectors;
+package com.techandsolve.lazyload.collectors;
 
 import lombok.Getter;
 
@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Getter
-public class LazyLoadCreator {
+public class LazyLoadCollectorHelper {
 
     private List<String> listaCasos;
     private Integer numeroDiasTrabajo = null;
@@ -15,7 +15,7 @@ public class LazyLoadCreator {
     private Integer elementosPorCaso = 0;
     private List<Integer> elementosDiaTrabajoActual = new ArrayList<>();
 
-    public LazyLoadCreator(){
+    public LazyLoadCollectorHelper(){
         listaCasos = new ArrayList<>();
     }
 

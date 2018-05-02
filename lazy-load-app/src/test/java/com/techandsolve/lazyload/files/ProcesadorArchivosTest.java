@@ -1,6 +1,6 @@
 package com.techandsolve.lazyload.files;
 
-import com.techandsolve.lazyload.exceptions.BusinessException;
+import com.techandsolve.lazyload.exceptions.TechnicalException;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
@@ -25,15 +25,15 @@ public class ProcesadorArchivosTest {
 
 
     @Test
-    public void obtenerContenidoArchivo_parametros_no_validos() throws UnsupportedEncodingException, BusinessException {
-        thrown.expect(BusinessException.class);
+    public void obtenerContenidoArchivo_parametros_no_validos() throws TechnicalException {
+        thrown.expect(TechnicalException.class);
         thrown.expectMessage("Error obteniendo el contenido del archivo cargado: el archivo es nulo");
 
         procesadorArchivos.obtenerContenidoArchivo(null);
     }
 
     @Test
-    public void obtenerContenidoArchivo_parametros_validos() throws UnsupportedEncodingException, BusinessException {
+    public void obtenerContenidoArchivo_parametros_validos() throws UnsupportedEncodingException, TechnicalException{
         String content = "5\n4\n3";
         String idTrabajador = "1";
         MultipartFile mockFile=new MockMultipartFile("mockFile","test.txt", "text/plain",

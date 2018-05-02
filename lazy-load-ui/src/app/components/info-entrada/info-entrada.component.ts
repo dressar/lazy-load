@@ -38,14 +38,16 @@ export class InfoEntradaComponent implements OnInit {
     this.currentFileUpload = this.selectedFiles.item(0);
     this.thingsSubscription = this.uploadService.pushFileToStorage(this.currentFileUpload, this.infoEntrada.idTrabajador)
     .subscribe(informacionRespuesta => {
-      if(informacionRespuesta){
-        this.alertService.success(informacionRespuesta.mensaje);
+        if(informacionRespuesta && informacionRespuesta.listaProcesos){
+          this.alertService.success(informacionRespuesta.mensaje);
           this.informacionRespuesta = informacionRespuesta;
           this.informacionRespuesta.idTrabajador = Object.assign({}, this.infoEntrada.idTrabajador);
           this.resetInformacionEntrada();
+        }else{
+          this.alertService.danger(informacionRespuesta.mensaje);
         }
       },error=>{
-        this.alertService.danger('error inesperado');
+        this.alertService.danger('Ha ocurrido un error inesperado, contacte al área de soporte!');
         console.log('error: ',error);
       });
     }

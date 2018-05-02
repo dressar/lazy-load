@@ -1,5 +1,8 @@
 package com.techandsolve.lazyload.business;
 
+import com.techandsolve.lazyload.constants.MensajesError;
+import com.techandsolve.lazyload.exceptions.TechnicalException;
+import com.techandsolve.lazyload.files.validators.ValidadorArchivo;
 import com.techandsolve.lazyload.dto.InformacionRespuesta;
 import com.techandsolve.lazyload.entities.ProcesoLazyLoad;
 import com.techandsolve.lazyload.exceptions.BusinessException;
@@ -29,11 +32,13 @@ public class ProcesadorLazyLoadTest {
 
     @InjectMocks
     ProcesadorLazyLoad procesadorLazyLoad;
-    @Mock
-    ProcesoLazyLoadRepository procesoLazyLoadRepository;
 
     @Mock
+    ProcesoLazyLoadRepository procesoLazyLoadRepository;
+    @Mock
     ProcesadorArchivos procesadorArchivos;
+    @Mock
+    ValidadorArchivo validadorArchivo;
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
@@ -69,14 +74,14 @@ public class ProcesadorLazyLoadTest {
 
 
     @Test
-    public void procesarLazyLoad_parametros_no_validos() throws BusinessException {
+    public void procesarLazyLoad_parametros_no_validos() throws TechnicalException, BusinessException {
         thrown.expect(BusinessException.class);
-        thrown.expectMessage("Los parametros de entrada no son validos");
+        thrown.expectMessage(MensajesError.ERROR_PARAMETROS_ENTRADA);
         procesadorLazyLoad.procesarLazyLoad(null,null);
     }
 
     @Test
-    public void procesarLazyLoad_parametros_validos() throws BusinessException, UnsupportedEncodingException {
+    public void procesarLazyLoad_parametros_validos() throws BusinessException, TechnicalException, UnsupportedEncodingException {
         String content = "5\n4\n30\n30\n1\n1\n3\n20\n20\n20\n11\n1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n6\n9\n19\n29\n" +
                 "39\n49\n59\n10\n32\n56\n76\n8\n44\n60\n47\n85\n71\n91\n";
         String idTrabajador = "1";
@@ -87,6 +92,7 @@ public class ProcesadorLazyLoadTest {
         Mockito.when(procesoLazyLoadRepository.findByIdTrabajador(idTrabajador)).thenReturn(listaProcesosTrabajador);
         InformacionRespuesta respuesta = procesadorLazyLoad.procesarLazyLoad(idTrabajador,mockFile);
         Mockito.verify(procesoLazyLoadRepository).save(Mockito.any(ProcesoLazyLoad.class));
+        Mockito.verify(validadorArchivo).validarContenidoArchivo(Mockito.anyList());
 
         Assert.assertNotNull(respuesta);
         Assert.assertFalse(respuesta.getListaProcesos().isEmpty());
@@ -94,22 +100,22 @@ public class ProcesadorLazyLoadTest {
     }
 
     @Test
-    public void obtenerInformacionRespuesta_parametros_no_validos() throws BusinessException{
+    public void obtenerInformacionRespuesta_parametros_no_validos() throws BusinessException, TechnicalException{
         thrown.expect(BusinessException.class);
-        thrown.expectMessage("Error obteniendo el archivo");
+        thrown.expectMessage(MensajesError.ERROR_ID_PROCESO_NO_VALIDO);
         procesadorLazyLoad.obtenerInformacionRespuesta(null);
     }
 
     @Test
-    public void obtenerInformacionRespuesta_proceso_null() throws BusinessException{
+    public void obtenerInformacionRespuesta_proceso_null() throws BusinessException, TechnicalException {
         thrown.expect(BusinessException.class);
-        thrown.expectMessage("No existe un proceso con el id: 1");
+        thrown.expectMessage(String.format(MensajesError.ERROR_PROCESO_NO_ENCONTRADO,"1"));
         Mockito.when(procesoLazyLoadRepository.findById("1")).thenReturn(Optional.empty());
         procesadorLazyLoad.obtenerInformacionRespuesta("1");
     }
 
     @Test
-    public void obtenerInformacionRespuesta_parametros_validos() throws BusinessException{
+    public void obtenerInformacionRespuesta_parametros_validos() throws BusinessException, TechnicalException {
         Mockito.when(procesoLazyLoadRepository.findById("1")).thenReturn(Optional.of(proceso1));
         List<String> infoRespuesta = procesadorLazyLoad.obtenerInformacionRespuesta("1");
 
